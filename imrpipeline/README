@@ -1,0 +1,100 @@
+CS643-851
+Programming Assignment 1
+
+--AWS Steps
+To setup the cloud environment and run this application in the cloud on 2 EC2s, 
+follow the below steps.
+
+First, you will need to login to your AWS Console through the AWS Educate Starter Account link.
+
+--IAM Setup
+Navigate to "IAM" -> "Access Management" -> "Policies". Find and select the following 3 policies:
+
+	AmazonRekognitionFullAccess
+	AmazonS3FullAccess
+	AmazonSQSFullAccess
+
+--EC2 Setup [Perform for EC2_A and EC2_B]
+Click on "Services" -> "EC2"
+Click on "Instances" in the drop down "Instances" Section 
+Click on "Launch Instances" -> "Launch Instancess" 
+Select the "Red Hat Enterprise Linux 8 (HVM), SSD Volume Type - ami-0b0af3577fe5e3532"  
+Select the "t2.micro type (Free tier eligible)" 
+Click "Next: Configure Instance Details"
+	Ensure "Number of instances" is "1"
+Click "Next: Add Storage"
+Click "Next: Add Tags"
+	Insert "EC2_A" under "Key" and "Value"
+Click "Next: Configure Security Group"
+	Click "Add Rule" to include the following and it will autofill:
+	SSH, HTTP, HTTPS
+	Under 'Source' drop down for each rule, select 'My IP'
+Click "Review and Launch"
+	Click on "Launch" after reviewing your information
+	On the dialog that pops up, select "Create a new key pair" in the drop down
+	Name it "EC2_A_CS643" 
+	Hit "Download key pair." 
+	Hit "Launch Instances"
+	Hit "View Instances"
+	You will probably see a status of "Pending" for the Instance State of each EC2. 
+	While waiting for these to switch to "Running," open a terminal and move the .pem 
+	file you downloaded to your home directory. exit
+
+--Run the following command to set the correct permissions for the .pem file:
+	$ chmod 400 EC2_A_CS643.pem
+
+--Connect to your EC2 instances (after they have started running), 
+Run the following command in your terminal (replacing <YOUR_EC2_INSTANCE_PUBLIC_DNS> with 
+the "Public IPv4 DNS" attribute of either EC2 instance):
+	$ ssh -i "~/cs643.pem" ec2-user@<YOUR_EC2_INSTANCE_PUBLIC_IPV4_ADDRESS>
+After you have connected, run the following commands to update Java from 1.7 to 1.8 on the EC2:
+	$ sudo yum install java-1.8.0-devel
+	$ sudo /usr/sbin/alternatives --config java
+Upon running the second command, you should enter the number that corresponds to 
+	java-1.8.0-openjdk.x86_64 (/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.322.b06-2.el8_5.x86_64/jre/bin/java)
+	**You will need to complete this step on BOTH EC2's.
+	
+--Credentials Setup [Access and Secret Keys]
+	Click on "Services" -> "IAM"
+	On the left tab side, under "Access Management" -> "Users"
+	Click on user created (e.g. carpenawashere)
+	Open the "Security credentials" tab, and then choose "Create access key"
+	To see the new access key, choose "Show". Your credentials resemble the following:
+		Access key ID: AKIAQB2SHQLRR6NF57M5
+		Secret access key: 73IWqwYi2nyPG0f16AnCjDARbBPK3zS6Uuts+p8i
+	To download the key pair, choose 'Download .csv' file. 
+	Store the .csv file with keys in a secure location.
+
+--SSH into both EC2's that you created in the previous step, and on each 
+one, create a file:
+	$mkdir .aws
+	$touch .aws/credentials
+	$vi .aws/credentials
+	**Paste those copied credentials into the credential file on each EC2 as follows:
+	[default]
+	aws_access_key_id= THI5I5NOTTH3ACCE55K3Y  
+	aws_secret_access_key= THI5I5NOTTH3S3CR3TACCE55K3Y
+	**Note: You will need to re-copy and paste these credentials onto both EC2's whenever 
+	they change (after your session ends).
+
+--Java/Git Installation
+If you do not have an up-to-date version of Java or Maven installed on your local machine, run the following commands locally:
+	$sudo yum install openjdk-11-jre-headless
+	$sudo yum install openjdk-11-jdk-headless
+	$sudo /usr/bin/dnf install git
+
+--Running the application
+In the terminal on your local machine, run the following commands to retrieve the GitHub Repository of the JAR files to be used for the 2 EC2 Instances.
+	$ git clone https://github.com/cc362/CS643-AWS-ProgAssgn-1.git
+
+--SSH into EC2-B and run the following command:
+	$ java -jar CS643-AWS-ProgAssgn-1/CarText/CarText.jar
+	**This will begin running the code for text recognition. However, since it depends on items in the SQS queue 
+	to process, it will simply wait until we begin running the car recognition code. To begin running the car 
+	recognition code. 
+--SSH into EC2-A and run the following command:
+	$ java -jar CS643-AWS-ProgAssgn-1/CarRecognize/CarRecognize.jar
+Now, both programs will be running simultaneously. The program on EC2-A is processing all images in the S3 bucket (Pa1_CS_643) and sending the indexes of images that 
+include cars to EC2-B through SQS, which in turn is processing these images to find out which ones include text as well. Finally, once both programs have finished running, 
+you will find a file named output.txt on EC2-B in the home directory. This output file will display the indexes of images that contained both cars and text, along with the 
+associated text from each image.
