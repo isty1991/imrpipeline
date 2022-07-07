@@ -41,12 +41,12 @@ Click "Review and Launch"
 	file you downloaded to your home directory. exit
 
 --Run the following command to set the correct permissions for the .pem file:
-	$ chmod 400 EC2_A_CS643.pem
+	$ chmod 400 EC2_A_1.pem
 
 --Connect to your EC2 instances (after they have started running), 
 Run the following command in your terminal (replacing <YOUR_EC2_INSTANCE_PUBLIC_DNS> with 
 the "Public IPv4 DNS" attribute of either EC2 instance):
-	$ ssh -i "~/cs643.pem" ec2-user@<YOUR_EC2_INSTANCE_PUBLIC_IPV4_ADDRESS>
+	$ ssh -i "~/EC2_A_1.pem" ec2-user@<YOUR_EC2_INSTANCE_PUBLIC_IPV4_ADDRESS>
 After you have connected, run the following commands to update Java from 1.7 to 1.8 on the EC2:
 	$ sudo yum install java-1.8.0-devel
 	$ sudo /usr/sbin/alternatives --config java
