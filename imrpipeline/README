@@ -85,10 +85,10 @@ If you do not have an up-to-date version of Java or Maven installed on your loca
 
 --Running the application
 In the terminal on your local machine, run the following commands to retrieve the GitHub Repository of the JAR files to be used for the 2 EC2 Instances.
-	$ git clone https://github.com/cc362/CS643-AWS-ProgAssgn-1.git
+	$ git clone https://github.com/isty1991/imrpipeline.git
 
 --SSH into EC2-B and run the following command:
-	$ java -jar CS643-AWS-ProgAssgn-1/CarText/CarText.jar
+	$ java -jar imrpipeline/CarRecog/CarRecog.jar
 	**This will begin running the code for text recognition. However, since it depends on items in the SQS queue 
 	to process, it will simply wait until we begin running the car recognition code. To begin running the car 
 	recognition code. 
