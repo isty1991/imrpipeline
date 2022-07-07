@@ -88,12 +88,12 @@ In the terminal on your local machine, run the following commands to retrieve th
 	$ git clone https://github.com/isty1991/imrpipeline.git
 
 --SSH into EC2-B and run the following command:
-	$ java -jar imrpipeline/CarRecog/CarRecog.jar
+	$ java -jar imrpipeline/TextRecog/TextRecog.jar
 	**This will begin running the code for text recognition. However, since it depends on items in the SQS queue 
 	to process, it will simply wait until we begin running the car recognition code. To begin running the car 
 	recognition code. 
 --SSH into EC2-A and run the following command:
-	$ java -jar CS643-AWS-ProgAssgn-1/CarRecognize/CarRecognize.jar
+	$ java -jar imrpipeline/CarRecog/CarRecog.jar
 Now, both programs will be running simultaneously. The program on EC2-A is processing all images in the S3 bucket (Pa1_CS_643) and sending the indexes of images that 
 include cars to EC2-B through SQS, which in turn is processing these images to find out which ones include text as well. Finally, once both programs have finished running, 
 you will find a file named output.txt on EC2-B in the home directory. This output file will display the indexes of images that contained both cars and text, along with the 
