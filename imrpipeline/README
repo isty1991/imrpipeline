@@ -32,7 +32,7 @@ Click "Next: Configure Security Group"
 Click "Review and Launch"
 	Click on "Launch" after reviewing your information
 	On the dialog that pops up, select "Create a new key pair" in the drop down
-	Name it "EC2_A_CS643" 
+	Name it "EC2_A_1" 
 	Hit "Download key pair." 
 	Hit "Launch Instances"
 	Hit "View Instances"
